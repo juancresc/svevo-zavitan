@@ -1,0 +1,6 @@
+venv
+.ipynb_checkpoints
+trash
+.DS_Store
+.idea
+disk
