@@ -41,6 +41,7 @@ def geneGFF2FA(gene, annotation, sequence , output):
         break
     if output:
         SeqIO.write(buffer_seqs, output, "fasta")
+        return "saved"
 
 if __name__ == "__main__":
     import argparse
@@ -50,4 +51,4 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--sequence", help="Sequence file (.fasta)", required=True)
     parser.add_argument("-o", "--output", help="Output file name (.fasta format)")
     args = parser.parse_args()#pylint: disable=invalid-name
-    geneGFF2FA(args.gene, args.annotation, args.sequence, args.output)
+    print(geneGFF2FA(args.gene, args.annotation, args.sequence, args.output))

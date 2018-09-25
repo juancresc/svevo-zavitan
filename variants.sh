@@ -29,16 +29,22 @@ samtools view -Sb disk/data/dic_wew.region.sam > disk/data/dic_wew.region.bam
 samtools view -Sb disk/data/lan_wew.region.sam > disk/data/lan_wew.region.bam
 
 bcftools mpileup -f disk/160802_Svevo_v2_pseudomolecules.fasta disk/data/lan_svevo.region.bam | bcftools call --multiallelic-caller --variants-only -O v -o disk/data/variant_lan_svevo.bcf
-bcftools view disk/data/variant_lan_svevo.bcf > disk/data/variant_lan_svevo.vcf
+bcftools view -i 'AVG(INFO/DP)>=4 & AVG(INFO/MQ)>=50 & (DP4[2]+DP4[3])/(DP4[0]+DP4[1]+DP4[2]+DP4[3])>0.75' disk/data/variant_lan_svevo.bcf > disk/data/variant_lan_svevo.vcf
 
 bcftools mpileup -f disk/160802_Svevo_v2_pseudomolecules.fasta disk/data/dic_svevo.region.bam | bcftools call --multiallelic-caller --variants-only -O v -o disk/data/variant_dic_svevo.bcf
-bcftools view disk/data/variant_dic_svevo.bcf > disk/data/variant_dic_svevo.vcf
+bcftools view -i 'AVG(INFO/DP)>=4 & AVG(INFO/MQ)>=50 & (DP4[2]+DP4[3])/(DP4[0]+DP4[1]+DP4[2]+DP4[3])>0.75' disk/data/variant_dic_svevo.bcf > disk/data/variant_dic_svevo.vcf
 
 bcftools mpileup -f disk/151210_Emmer_zavitan_v2_pseudomolecules.fasta.fa disk/data/lan_wew.region.bam | bcftools call --multiallelic-caller --variants-only -O v -o disk/data/variant_lan_wew.bcf
-bcftools view  disk/data/variant_lan_wew.bcf > disk/data/variant_lan_wew.vcf
+bcftools view -i 'AVG(INFO/DP)>=4 & AVG(INFO/MQ)>=50 & (DP4[2]+DP4[3])/(DP4[0]+DP4[1]+DP4[2]+DP4[3])>0.75' disk/data/variant_lan_wew.bcf > disk/data/variant_lan_wew.vcf
 
 bcftools mpileup -f disk/151210_Emmer_zavitan_v2_pseudomolecules.fasta.fa disk/data/dic_wew.region.bam | bcftools call --multiallelic-caller --variants-only -O v -o disk/data/variant_dic_wew.bcf
-bcftools view disk/data/variant_dic_wew.bcf > disk/data/variant_dic_wew.vcf
+bcftools view -i 'AVG(INFO/DP)>=4 & AVG(INFO/MQ)>=50 & (DP4[2]+DP4[3])/(DP4[0]+DP4[1]+DP4[2]+DP4[3])>0.75' disk/data/variant_dic_wew.bcf > disk/data/variant_dic_wew.vcf
+
+
+
+#check vcfs
+wc -l disk/data/*.vcf
+
 
 ####BEGIN snpEff databases
 
@@ -51,7 +57,7 @@ mkdir disk/snpEff/data/zavitan_v2
 ln -s disk/160802_Svevo_v2_pseudomolecules.fasta disk/snpEff/data/svevo/sequences.fa
 ln -s disk/PGSB_TRITD_Jan2017_HC_CDS.fasta /snpEff/data/svevo/cds.fa
 ln -s disk/PGSB_TRITD_Jan2017_HC_protein.fasta /snpEff/data/svevo/protein.fa
-ln -s   /snpEff/data/svevo/genes.gff
+ln -s disk/PGSB_TRITD_Jan2017_all.gff3 disk/snpEff/data/svevo/genes.gff
 
 #zavitan
 ln -s disk/151210_Emmer_zavitan_v2_pseudomolecules.fasta.fa disk/snpEff/data/zavitan/sequences.fa
@@ -66,6 +72,7 @@ ln -s disk/Zavitan_HC_and_LC_predict_protein_version2/transcripts.genes.combined
 
 
 #create SnpEff databases
+cd disk/snpEff
 java -Xms5000m -Xmx8000m -jar snpEff.jar build -gff3 -v svevo
 java -Xms5000m -Xmx8000m -jar snpEff.jar build -gtf22 -v zavitan
 java -Xms5000m -Xmx8000m -jar snpEff.jar build -gff3 -v zavitan_v2
@@ -78,6 +85,9 @@ java -Xmx4g -jar snpEff.jar svevo ../data/variant_lan_svevo.vcf > ../data/varian
 java -Xmx4g -jar snpEff.jar svevo ../data/variant_dic_svevo.vcf > ../data/variant_dic_svevo.ann.vcf
 java -Xmx4g -jar snpEff.jar zavitan_v2 ../data/variant_lan_wew.vcf > ../data/variant_lan_wew.ann.vcf
 java -Xmx4g -jar snpEff.jar zavitan_v2 ../data/variant_dic_wew.vcf > ../data/variant_dic_wew.ann.vcf
+
+#extract interesting genes
+python biopyutils/gff2FA.py -s /Volumes/toshiba/bio/daniela/160802_Svevo_v2_pseudomolecules.fasta -a /Volumes/toshiba/bio/daniela/PGSB_TRITD_Jan2017_all.gff3 -i TRITD3Av1G031440
 
 #Run DEG
 
