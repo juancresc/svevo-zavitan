@@ -5,3 +5,4 @@ trash
 .idea
 disk
 data/
+biopyutils/__pycache__/

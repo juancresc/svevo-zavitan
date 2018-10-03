@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import pandas as pd
-from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-from Bio.Seq import Seq
-
-def geneGFF2FA(gene, annotation, sequence , output):
+def geneGFF2FA(gene, annotation, sequence , output = False):
     """Extract fasta files from annotations
     """
+    import pandas as pd
+    from Bio import SeqIO
+    from Bio.SeqRecord import SeqRecord
+    from Bio.Seq import Seq
     df_gff = pd.read_csv(annotation, index_col=False, sep='\t', header=None)
     df_gff.columns = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']
     fasta_seq = SeqIO.parse(sequence, 'fasta')
