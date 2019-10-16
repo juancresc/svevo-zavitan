@@ -13,3 +13,9 @@ WEW
 
 Gene:
 TRITD3Av1G027580	0.8324	3.2313	2.4868	1.29935685	0.193821493	NA	+	chr3A	55671099	55672610
+
+
+ daniela grep "gene" SORTED_WEW_v2_HC_e_LC_GFF3_CATTATI_gff_PAO_26feb18.gff3 | awk '$1 == "chr3A" && $4 > 54600000 && $5 < 79100000  {print}' | wc -l
+1116
+➜  daniela grep "gene" PGSB_TRITD_Jan2017_all.gff3 | awk '$1 == "chr3A" && $4 > 54100000 && $5 < 78600000  {print}' | wc -l
+1006
